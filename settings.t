@@ -6,7 +6,6 @@ if image_height < 1 then
     image_height := 1
 end if
 
-
 var focal_length : real := 1.0
 var viewport_height : real := 2.0
 var viewport_width : int := floor(viewport_height * (image_width / image_height))

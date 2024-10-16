@@ -1,7 +1,8 @@
 import GUI
 
-include "vec3.t"
-include "ray.t"
+include "rtweekend.h.t"
+include "hittable.t"
+include "sphere.t"
 include "settings.t"
 include "render.t"
 
