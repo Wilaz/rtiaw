@@ -1,5 +1,5 @@
 class interval
-    export imin, imax, initialize, size, contains, surrounds
+    export imin, imax, initialize, size, contains, surrounds, clamp
     var imin : real
     var imax : real
 
@@ -19,6 +19,16 @@ class interval
     function surrounds(x : real) : boolean
         result imin < x and x < imax
     end surrounds
+
+    function clamp(x : real) : real
+        if (x < imin) then
+            result imin
+        elsif (x > imax) then
+            result imax
+        else
+            result x
+        end if
+    end clamp
 end interval
 
 function iinit(imin, imax : real) : ^interval

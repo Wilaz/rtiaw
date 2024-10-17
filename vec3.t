@@ -29,16 +29,16 @@ class vec3
     end negative
 
     function plus(v : ^vec3) : ^vec3
-        e(1) := x() + v -> x()
-        e(2) := y() + v -> y()
-        e(3) := z() + v -> z()
+        e(0) := x() + v -> x()
+        e(1) := y() + v -> y()
+        e(2) := z() + v -> z()
         result self
     end plus
 
     function multiply(t : real) : ^vec3
-        e(1) := x() * t
-        e(2) := y() * t
-        e(3) := z() * t
+        e(0) := x() * t
+        e(1) := y() * t
+        e(2) := z() * t
         result self
     end multiply
 

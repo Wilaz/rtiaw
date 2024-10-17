@@ -3,14 +3,16 @@ class hittable_list
     import iinit
     export clear, add
 
-    var objects : array 0 .. 99 of ^hittable
     var ind : int := 0
+    var objects : flexible array 0..0 of ^hittable
 
     procedure clear
+        free objects
         ind := 0
     end clear
 
     procedure add(object : ^hittable)
+        new objects , ind
         objects (ind) := object
         ind := ind + 1
     end add
