@@ -1,6 +1,6 @@
 % Constants
-
-var infinity : real := 65536
+var infinity    : real := 2147483647 % 2^31 - 1
+var pi          : real := Math.PI
 
 % Utility Functions
 
@@ -9,6 +9,7 @@ function degrees_to_radians(degrees : real) : real
 end degrees_to_radians
 
 % Common Headers
-
+include "interval.t"
 include "vec3.t"
 include "ray.t"
+include "window.t"

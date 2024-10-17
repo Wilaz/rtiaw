@@ -11,7 +11,7 @@ class sphere
         radius := max(0, rad)
     end initialize
 
-    body function hit(r : ^ray, ray_tmin, ray_tmax : real, rec : ^hit_record) : boolean
+    body function hit(r : ^ray, ray_t : ^interval, rec : ^hit_record) : boolean
         var oc              : ^vec3 := vsub(center, r -> origin)
         var a               : real  := r -> direction -> len_squared
         var h               : real  := dot(r -> direction, oc)
@@ -25,10 +25,10 @@ class sphere
         var sqrtd : real := sqrt(discriminant)
         var root : real := (h - sqrtd) / a
 
-        if root <= ray_tmin or ray_tmax <= root then
+        if not ray_t -> surrounds(root) then
             root := (h + sqrtd) / a
 
-            if root <= ray_tmin or ray_tmax <= root then
+            if not ray_t -> surrounds(root) then
                 result false
             end if
         end if

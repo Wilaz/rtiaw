@@ -33,8 +33,8 @@ class hit_record
 end hit_record
 
 class hittable
-    import ray, hit_record
+    import ray, hit_record, interval
     export hit
 
-    deferred function hit(r : ^ray, ray_tmin, ray_tmax : real, rec : ^hit_record) : boolean
+    deferred function hit(r : ^ray, ray_t : ^interval, rec : ^hit_record) : boolean
 end hittable
