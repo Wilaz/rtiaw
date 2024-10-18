@@ -3,15 +3,14 @@ var infinity    : real := 2147483647 % 2^31 - 1
 var pi          : real := Math.PI
 
 % Utility Functions
-
 function degrees_to_radians(degrees : real) : real
-    result degrees * Math.PI / 180.0
+    result degrees * pi / 180.0
 end degrees_to_radians
 
-function random(minnn, maxxx : real) : real
+function random(minimum, maximum : real) : real
     var temp : real
     rand(temp)
-    result ((maxxx-minnn) * temp) - minnn
+    result ((maximum-minimum) * temp) - minimum
 end random
 
 % Common Headers

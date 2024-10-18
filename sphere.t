@@ -19,6 +19,7 @@ class sphere
         var discriminant    : real  := (h * h) - (a*c)
 
         if (discriminant < 0) then
+            free oc
             result false
         end if
 
@@ -29,6 +30,7 @@ class sphere
             root := (h + sqrtd) / a
 
             if not ray_t -> surrounds(root) then
+                free oc
                 result false
             end if
         end if
@@ -38,6 +40,8 @@ class sphere
 
         var outward_normal : ^vec3 := vfdiv(vsub(rec -> p, center), radius)
         rec -> set_face_normal(r, outward_normal)
+
+        free oc
 
         result true
     end hit

@@ -152,19 +152,22 @@ class camera
         initialize
         var pixel_color     : ^vec3
         var r               : ^ray
+        new pixel_color
 
         for x : 0 .. image_width
             for y : 0 .. image_height
-                pixel_color := vinit(0, 0, 0)
+                pixel_color -> initialize(0, 0, 0)
+
                 for sample : 0 .. samples_per_pixel
                     r := get_ray(x, y)
-                    pixel_color := pixel_color -> plus(ray_color(r, world))
+                    pixel_color -> plus(ray_color(r, world))
+                    free r
                 end for
                 vSetPixel(x, y, fvmul(pixel_samples_scale, pixel_color))
-                free pixel_color
-                free r
             end for
         end for
+
+        free pixel_color
     end render
 end camera
 

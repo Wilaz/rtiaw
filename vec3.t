@@ -28,22 +28,20 @@ class vec3
         result v
     end negative
 
-    function plus(v : ^vec3) : ^vec3
+    procedure plus(v : ^vec3)
         e(0) := x() + v -> x()
         e(1) := y() + v -> y()
         e(2) := z() + v -> z()
-        result self
     end plus
 
-    function multiply(t : real) : ^vec3
+    procedure multiply(t : real)
         e(0) := x() * t
         e(1) := y() * t
         e(2) := z() * t
-        result self
     end multiply
 
-    function divide(t : real) : ^vec3
-        result self -> multiply(1/t)
+    procedure divide(t : real)
+        self -> multiply(1/t)
     end divide
 
     function len_squared : real
@@ -55,6 +53,7 @@ class vec3
     end len
 end vec3
 
+% Vector initalizer
 function vinit(x, y, z : real) : ^vec3
     var v : ^vec3
     new v
@@ -62,7 +61,7 @@ function vinit(x, y, z : real) : ^vec3
     result v
 end vinit
 
-
+% Addition and subtraction
 function vadd(u, v : ^vec3) : ^vec3
     result vinit(u->x + v->x, u->y + v->y, u->z + v->z)
 end vadd
@@ -71,7 +70,7 @@ function vsub(u, v : ^vec3) : ^vec3
     result vinit(u->x - v->x, u->y - v->y, u->z - v->z)
 end vsub
 
-
+% Multiplication
 function vvmul(u, v : ^vec3) : ^vec3
     result vinit(u->x * v->x, u->y * v->y, u->z * v->z)
 end vvmul
@@ -84,7 +83,7 @@ function fvmul(t : real, v : ^vec3) : ^vec3
     result vinit(v->x * t, v->y * t, v->z * t)
 end fvmul
 
-
+% Division
 function vfdiv(v : ^vec3, t : real) : ^vec3
     result vfmul(v, (1/t))
 end vfdiv
@@ -97,19 +96,17 @@ function vvdiv(u, v : ^vec3) : ^vec3
     result vvmul(fvdiv(1, u), v)
 end vvdiv
 
-
+% Misc. vector opperations
 function dot(u, v : ^vec3) : real
     result (u -> x * v -> x) + (u -> y * v -> y) + (u -> z * v -> z)
 end dot
 
 function cross(u, v : ^vec3) : ^vec3
-    var x : ^vec3 :=
-        vinit(
-            u -> y * v -> z - u -> z * v -> y,
-            u -> z * v -> x - u -> x * v -> z,
-            u -> x * v -> y - u -> y * v -> x
-        )
-    result x
+    result vinit(
+        u -> y * v -> z - u -> z * v -> y,
+        u -> z * v -> x - u -> x * v -> z,
+        u -> x * v -> y - u -> y * v -> x
+    )
 end cross
 
 function unit_vector(v : ^vec3) : ^vec3
