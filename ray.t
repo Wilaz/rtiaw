@@ -19,7 +19,10 @@ class ray
     end direction
 
     function at(t : real) : ^vec3
-        result vadd(orig, fvmul(t, dir))
+        var tmp : ^vec3 := fvmul(t, dir)
+        var res : ^vec3 := vadd(orig, tmp)
+        free tmp
+        result res
     end at
 end ray
 

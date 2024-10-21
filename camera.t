@@ -1,7 +1,7 @@
 include "set_pixel.t"
 
 class camera
-    import vec3, ray, hit_record, iinit, fvmul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vfdiv, vvmul, random
+    import vec3, ray, hit_record, iinit, fvmul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vfdiv, vvmul, random, interval
     export aspect_ratio, image_width, render, inits, window_name, samples_per_pixel
 
     % public
@@ -20,36 +20,46 @@ class camera
 
     function ray_color(r : ^ray, world : ^hittable) : ^vec3
         var rec             : ^hit_record
-        var unit_direction  : ^vec3
         var a               : real
         var col             : ^vec3
         new rec
 
-        if (world -> hit( r, iinit(0, infinity), rec )) then
-            col :=
-                fvmul(
-                    0.5,
-                    vadd(
-                        rec -> normal,
-                        vinit(1,1,1)))
+        var rc_a    :^vec3  := vinit(1.0, 1.0, 1.0)
+        var rc_b    :^vec3
 
+        var rc_i    :^interval  := iinit(0, infinity)
+
+        if (world -> hit( r, rc_i, rec )) then
+            rc_b    := vadd(rec -> normal, rc_a)
+            col     := fvmul(0.5, rc_b)
+            free rc_a
+            free rc_b
+            free rc_i
+            free rec
             result col
         end if
 
+        var rc_fa   :^vec3
+        var rc_fb   :^vec3
+
+        var unit_direction  : ^vec3
         unit_direction  := unit_vector(r -> direction)
         a               := 0.5 * (unit_direction -> y + 1.0)
 
-        col :=
-            vadd(
-                fvmul(
-                    (1.0-a),
-                    vinit(1.0, 1.0, 1.0)),
-                fvmul(
-                    a,
-                    vinit(0.5, 0.7, 1.0)))
+        rc_b    := vinit(0.5, 0.7, 1.0)
+
+        rc_fa   := fvmul((1.0-a), rc_a)
+        rc_fb   := fvmul(a, rc_b)
+
+        col := vadd(rc_fa, rc_fb)
 
         free unit_direction
         free rec
+        free rc_i
+        free rc_a
+        free rc_b
+        free rc_fa
+        free rc_fb
 
         result col
     end ray_color
@@ -122,27 +132,30 @@ class camera
     end sample_square
 
     function get_ray(x, y : int) : ^ray
-
         var pixel_sample    : ^vec3
         var ray_origin      : ^vec3
         var ray_direction   : ^vec3
         var offset          : ^vec3
+        var gr_fa           : ^vec3
+        var gr_fb           : ^vec3
+        var gr_a            : ^vec3
         var res             : ^ray
 
+
         offset          :=  sample_square
-        pixel_sample    :=  vadd(
-                                pixel00_loc,
-                                vadd(
-                                    fvmul( (x + offset -> x), pixel_delta_u ),
-                                    fvmul( (y + offset -> y), pixel_delta_v )
-                                )
-                            )
+        gr_fa           :=  fvmul(x + offset -> x, pixel_delta_u)
+        gr_fb           :=  fvmul(y + offset -> y, pixel_delta_v)
+        gr_a            :=  vadd(gr_fa, gr_fb)
+        pixel_sample    :=  vadd(pixel00_loc, gr_a)
 
         ray_origin      := center
         ray_direction   := vsub(pixel_sample, ray_origin)
         res := rinit(ray_origin, ray_direction)
 
         free offset
+        free gr_fa
+        free gr_fb
+        free gr_a
         free pixel_sample
 
         result res
@@ -150,8 +163,10 @@ class camera
 
     procedure render(world : ^hittable)
         initialize
-        var pixel_color     : ^vec3
-        var r               : ^ray
+        var pixel_color : ^vec3
+        var r           : ^ray
+        var rc          : ^vec3
+        var final_color : ^vec3
         new pixel_color
 
         for x : 0 .. image_width
@@ -159,11 +174,18 @@ class camera
                 pixel_color -> initialize(0, 0, 0)
 
                 for sample : 0 .. samples_per_pixel
-                    r := get_ray(x, y)
-                    pixel_color -> plus(ray_color(r, world))
+                    r   := get_ray(x, y)
+                    rc  := ray_color(r, world)
+                    pixel_color -> plus(rc)
+                    free rc
                     free r
                 end for
-                vSetPixel(x, y, fvmul(pixel_samples_scale, pixel_color))
+
+                final_color := fvmul(pixel_samples_scale, pixel_color)
+
+                vSetPixel(x, y, final_color)
+
+                free final_color
             end for
         end for
 
