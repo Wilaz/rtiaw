@@ -27,14 +27,11 @@ class camera
         var rc_a    :^vec3  := vinit(1.0, 1.0, 1.0)
         var rc_b    :^vec3
 
-        var rc_i    :^interval  := iinit(0, infinity)
-
-        if (world -> hit( r, rc_i, rec )) then
+        if (world -> hit( r, iuniversef, rec )) then
             rc_b    := vadd(rec -> normal, rc_a)
             col     := smul(rc_b, 0.5)
             free rc_a
             free rc_b
-            free rc_i
             free rec
             result col
         end if
@@ -49,13 +46,12 @@ class camera
         rc_b    := vinit(0.5, 0.7, 1.0)
 
         rc_fa   := smul(rc_a, (1.0-a))
-        rc_fb   := smul(rc_b, z)
+        rc_fb   := smul(rc_b, a)
 
         col := vadd(rc_fa, rc_fb)
 
         free unit_direction
         free rec
-        free rc_i
         free rc_a
         free rc_b
         free rc_fa
@@ -141,8 +137,8 @@ class camera
 
 
         offset          :=  sample_square
-        gr_fa           :=  vmul(pixel_delta_u, x + offset -> x)
-        gr_fb           :=  vmul(pixel_delta_v, y + offset -> y)
+        gr_fa           :=  smul(pixel_delta_u, x + offset -> x)
+        gr_fb           :=  smul(pixel_delta_v, y + offset -> y)
         gr_a            :=  vadd(gr_fa, gr_fb)
         pixel_sample    :=  vadd(pixel00_loc, gr_a)
 
