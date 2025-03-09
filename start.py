@@ -2,21 +2,21 @@ import os
 from pathlib import Path
 from sys import platform
 
-main_path = Path.cwd() / "main.t"
-
-
 def launch_exe(posix: bool):
     from dotenv import load_dotenv
 
     load_dotenv()
 
+
+    main_path = Path.cwd() / "main.t"
     turing_path = os.getenv("TURING_PATH")
     turing_path = rf"{turing_path}"
 
     os.chdir(turing_path)
 
     if posix:
-        command = rf'wine turing.exe -run "{main_path}"'
+        main_path = str(main_path).replace("/", "\\")
+        command = rf'wine turing.exe -run Z:"{main_path}"'
     else:
         command = rf'turing.exe -run "{main_path}"'
 
