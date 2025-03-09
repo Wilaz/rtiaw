@@ -1,31 +1,26 @@
 class ray
-    import vec3, vadd, fvmul
+    import vec3, vadd, smul
     export initialize, origin, direction, at
 
-    var orig : ^vec3
-    var dir : ^vec3
+    var origin : ^vec3
+    var direction : ^vec3
 
-    procedure initialize(origin : ^vec3, direction : ^vec3)
-	    orig := origin
-	    dir := direction
+    procedure initialize(originp : ^vec3, directionp : ^vec3)
+	    origin := originp
+	    direction := directionp
     end initialize
 
-    function origin : ^vec3
-        result orig
-    end origin
-
-    function direction : ^vec3
-        result dir
-    end direction
-
     function at(t : real) : ^vec3
-        result vadd(orig, fvmul(t, dir))
+        var temp : ^vec3 := smul(direction, t)
+        var res : ^vec3 := vadd(origin, temp)
+        free temp
+        result res
     end at
 end ray
 
-function rinit(orig : ^vec3, dir : ^vec3) : ^ray
+function rinit(origin : ^vec3, direction : ^vec3) : ^ray
     var r : ^ray
     new r
-    r -> initialize(orig, dir)
+    r -> initialize(origin, direction)
     result r
 end rinit

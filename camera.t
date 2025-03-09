@@ -1,7 +1,7 @@
 include "set_pixel.t"
 
 class camera
-    import vec3, ray, hit_record, iinit, fvmul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vfdiv, vvmul, random
+    import vec3, ray, hit_record, iinit, smul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vmul, random, sdiv, iuniversef
     export aspect_ratio, image_width, render, inits, window_name, samples_per_pixel
 
     % public
@@ -25,13 +25,15 @@ class camera
         var col             : ^vec3
         new rec
 
-        if (world -> hit( r, iinit(0, infinity), rec )) then
+        if (world -> hit( r, iuniversef, rec )) then
             col :=
-                fvmul(
-                    0.5,
-                    vadd(
-                        rec -> normal,
-                        vinit(1,1,1)))
+            smul(
+            vadd(
+                rec -> normal,
+                vinit(1,1,1)
+            ),
+            0.5
+            )
 
             result col
         end if
@@ -41,12 +43,15 @@ class camera
 
         col :=
             vadd(
-                fvmul(
-                    (1.0-a),
-                    vinit(1.0, 1.0, 1.0)),
-                fvmul(
-                    a,
-                    vinit(0.5, 0.7, 1.0)))
+            smul(
+                vinit(1.0, 1.0, 1.0),
+                (1.0-a)
+            ),
+            smul(
+                vinit(0.5, 0.7, 1.0),
+                a
+            )
+            )
 
         free unit_direction
         free rec
@@ -89,40 +94,37 @@ class camera
         viewport_u      := vinit(viewport_width, 0, 0)
         viewport_v      := vinit(0, -viewport_height, 0)
 
-        pixel_delta_u   := vfdiv(viewport_u, image_width)
-        pixel_delta_v   := vfdiv(viewport_v, image_height)
+        pixel_delta_u   := sdiv(viewport_u, image_width)
+        pixel_delta_v   := sdiv(viewport_v, image_height)
 
-        viewport_upper_left :=
+        viewport_upper_left := vsub(
+            vsub(
                 vsub(
-                    vsub(
-                        vsub(
-                            center,
-                            vinit(0, 0, focal_length)
-                        ),
-                        vfdiv(viewport_u, 2)
-                    ),
-                    vfdiv(viewport_v, 2)
-                )
+                    center,
+                    vinit(0, 0, focal_length)
+                ),
+                sdiv(viewport_u, 2)
+            ),
+            sdiv(viewport_v, 2)
+        )
 
-        pixel00_loc         :=
-                vadd(
-                    viewport_upper_left,
-                    fvmul(
-                        0.5,
-                        vvmul(
-                            pixel_delta_u,
-                            pixel_delta_v
-                        )
-                    )
-                )
+        pixel00_loc         := vadd(
+            viewport_upper_left,
+            smul(
+                vmul(
+                    pixel_delta_u,
+                    pixel_delta_v
+                ),
+                0.5
+            )
+        )
     end initialize
 
     function sample_square : ^vec3
-        result vinit(random(-0.5, 0.5), random(-0.5, 0.5), 0)
+	    result vinit(random(-0.5, 0.5), random(-0.5, 0.5), 0)
     end sample_square
 
     function get_ray(x, y : int) : ^ray
-
         var pixel_sample    : ^vec3
         var ray_origin      : ^vec3
         var ray_direction   : ^vec3
@@ -131,12 +133,12 @@ class camera
 
         offset          :=  sample_square
         pixel_sample    :=  vadd(
-                                pixel00_loc,
-                                vadd(
-                                    fvmul( (x + offset -> x), pixel_delta_u ),
-                                    fvmul( (y + offset -> y), pixel_delta_v )
-                                )
-                            )
+            pixel00_loc,
+            vadd(
+                smul( pixel_delta_u, (x + offset -> x) ),
+                smul( pixel_delta_v, (y + offset -> y) )
+            )
+        )
 
         ray_origin      := center
         ray_direction   := vsub(pixel_sample, ray_origin)
@@ -163,7 +165,7 @@ class camera
                     pixel_color -> plus(ray_color(r, world))
                     free r
                 end for
-                vSetPixel(x, y, fvmul(pixel_samples_scale, pixel_color))
+                vSetPixel(x, y, smul(pixel_color, pixel_samples_scale))
             end for
         end for
 

@@ -1,6 +1,6 @@
 class sphere
     inherit hittable
-    import vec3, dot, vsub, vfdiv
+    import vec3, dot, vsub, sdiv
     export initialize
 
     var center  : ^vec3
@@ -38,11 +38,10 @@ class sphere
         rec -> sett(root)
         rec -> setp(r -> at(rec -> t))
 
-        var outward_normal : ^vec3 := vfdiv(vsub(rec -> p, center), radius)
+        var outward_normal : ^vec3 := sdiv(vsub(rec -> p, center), radius)
         rec -> set_face_normal(r, outward_normal)
 
         free oc
-
         result true
     end hit
 end sphere

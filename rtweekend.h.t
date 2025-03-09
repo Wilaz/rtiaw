@@ -1,5 +1,5 @@
 % Constants
-var infinity    : real := 2147483647 % 2^31 - 1
+var infinity    : real := Limits.maxnat
 var pi          : real := Math.PI
 
 % Utility Functions

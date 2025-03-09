@@ -38,10 +38,6 @@ function iinit(imin, imax : real) : ^interval
     result i
 end iinit
 
-function iempty : ^interval
-    result iinit(+infinity, -infinity)
-end iempty
-
-function iuniverse : ^interval
-    result iinit(-infinity, +infinity)
-end iuniverse
+var iempty : ^interval := iinit(+infinity, -infinity)
+var iuniverse : ^interval := iinit(-infinity, +infinity)
+var iuniversef : ^interval := iinit(0, infinity)

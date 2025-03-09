@@ -1,25 +1,15 @@
 class vec3
-    export e, initialize, x, y, z, negative, plus, multiply, divide, len_squared, len
+    export initialize, x, y, z, negative, plus, multiply, divide, len_squared, len
 
-    var e : array 0 .. 2 of real
+    var x : real
+    var y : real
+    var z : real
 
-    procedure initialize(e0, e1, e2 : real)
-	    e(0) := e0
-	    e(1) := e1
-	    e(2) := e2
+    procedure initialize(xp, yp, zp : real)
+	    x := xp
+	    y := yp
+	    z := zp
     end initialize
-
-    function x : real
-	    result e (0)
-    end x
-
-    function y : real
-	    result e (1)
-    end y
-
-    function z : real
-	    result e (2)
-    end z
 
     function negative : ^vec3
         var v : ^vec3
@@ -29,15 +19,15 @@ class vec3
     end negative
 
     procedure plus(v : ^vec3)
-        e(0) := x() + v -> x()
-        e(1) := y() + v -> y()
-        e(2) := z() + v -> z()
+        x := x + v -> x
+        y := y + v -> y
+        z := z + v -> z
     end plus
 
     procedure multiply(t : real)
-        e(0) := x() * t
-        e(1) := y() * t
-        e(2) := z() * t
+        x := x * t
+        y := y * t
+        z := z * t
     end multiply
 
     procedure divide(t : real)
@@ -45,7 +35,7 @@ class vec3
     end divide
 
     function len_squared : real
-        result e(0)*e(0) + e(1)*e(1) + e(2)*e(2)
+        result x*x + y*y + z*z
     end len_squared
 
     function len : real
@@ -71,30 +61,29 @@ function vsub(u, v : ^vec3) : ^vec3
 end vsub
 
 % Multiplication
-function vvmul(u, v : ^vec3) : ^vec3
+function vmul(u, v : ^vec3) : ^vec3
     result vinit(u->x * v->x, u->y * v->y, u->z * v->z)
-end vvmul
+end vmul
 
-function vfmul(v : ^vec3, t : real) : ^vec3
+function smul(v : ^vec3, t : real) : ^vec3
     result vinit(v->x * t, v->y * t, v->z * t)
-end vfmul
-
-function fvmul(t : real, v : ^vec3) : ^vec3
-    result vinit(v->x * t, v->y * t, v->z * t)
-end fvmul
+end smul
 
 % Division
-function vfdiv(v : ^vec3, t : real) : ^vec3
-    result vfmul(v, (1/t))
-end vfdiv
+function sdiv(v : ^vec3, t : real) : ^vec3
+    result smul(v, (1/t))
+end sdiv
 
-function fvdiv(t : real, v : ^vec3) : ^vec3
-    result fvmul((1/t), v)
-end fvdiv
+function vdiv(u, v : ^vec3) : ^vec3
+    var temp : ^vec3
+    var res : ^vec3
 
-function vvdiv(u, v : ^vec3) : ^vec3
-    result vvmul(fvdiv(1, u), v)
-end vvdiv
+    temp := sdiv(u, 1)
+    res  := vmul(temp, v)
+    free temp
+
+    result res
+end vdiv
 
 % Misc. vector opperations
 function dot(u, v : ^vec3) : real
@@ -110,5 +99,5 @@ function cross(u, v : ^vec3) : ^vec3
 end cross
 
 function unit_vector(v : ^vec3) : ^vec3
-    result vfdiv(v, v -> len)
+    result sdiv(v, v -> len)
 end unit_vector
