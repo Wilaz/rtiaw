@@ -3,5 +3,5 @@
 ## Running
 
 ```console
-nix run . -- -run ./main.t
+nix run . -- -run ./src/main.t
 ```
