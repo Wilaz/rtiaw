@@ -1,3 +1,5 @@
 .env
 .vscode
 main.exe
+turing_files.ini
+turing/turing_files.ini
