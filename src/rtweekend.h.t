@@ -13,8 +13,12 @@ function random(minimum, maximum : real) : real
     result ((maximum-minimum) * temp) - minimum
 end random
 
+procedure winit(width, height : int, title : string)
+    View.Set("graphics:" + intstr(width) + ";" + intstr(height))
+    View.Set("title:" + title)
+end winit
+
 % Common Headers
 include "interval.t"
 include "vec3.t"
 include "ray.t"
-include "window.t"

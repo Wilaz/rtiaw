@@ -1,9 +1,8 @@
 class hit_record
     import vec3, ray, dot, negate
-    export  p, normal, t, front_face, set_face_normal, sets, sett, setp
+    export  var p, var t, normal, front_face, set_face_normal, sets
 
-    var     p           : vec3
-    var     normal      : vec3
+    var     p, normal   : vec3
     var     t           : real
     var     front_face  : boolean
 
@@ -18,18 +17,10 @@ class hit_record
 
     procedure sets(value : ^hit_record)
         p           := value -> p
-        normal      := value -> normal
         t           := value -> t
+        normal      := value -> normal
         front_face  := value -> front_face
     end sets
-
-    procedure sett(t_ : real)
-        t := t_
-    end sett
-
-    procedure setp(p_ : vec3)
-        p := p_
-    end setp
 end hit_record
 
 class hittable

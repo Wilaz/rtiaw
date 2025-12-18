@@ -1,15 +1,10 @@
 class sphere
     inherit hittable
     import vec3, dot, vsub, sdiv, len_squared, hit_record, rat, isurrounds
-    export initialize
+    export var center, var radius
 
     var center  : vec3
     var radius  : real
-
-    procedure initialize(cent : vec3, rad : real)
-        center := cent
-        radius := max(0, rad)
-    end initialize
 
     body function hit(r : ray, ray_t : interval, rec : ^hit_record) : boolean
         var oc              : vec3 := vsub(center, r.origin)
@@ -33,8 +28,8 @@ class sphere
             end if
         end if
 
-        rec -> sett(root)
-        rec -> setp(rat(r, rec -> t))
+        rec -> t := (root)
+        rec -> p := (rat(r, rec -> t))
 
         var outward_normal : vec3 := sdiv(vsub(rec -> p, center), radius)
         rec -> set_face_normal(r, outward_normal)
@@ -46,6 +41,7 @@ end sphere
 function sinit(center : vec3, radius : real) : ^sphere
     var s : ^sphere
     new s
-    s -> initialize(center, radius)
+    s -> center := center
+    s -> radius := max(0, radius)
     result s
 end sinit

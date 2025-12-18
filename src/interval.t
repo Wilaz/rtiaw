@@ -5,10 +5,10 @@ type interval:
     end record
 
 % Interval initalizer
-function iinit(min_, max_ : real) : interval
+function iinit(min, max : real) : interval
     var i : interval
-    i.min := min_
-    i.max := max_
+    i.min := min
+    i.max := max
     result i
 end iinit
 

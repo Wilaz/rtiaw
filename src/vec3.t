@@ -1,35 +1,33 @@
 type vec3:
     record
-        x : real
-        y : real
-        z : real
+        x, y, z : real
     end record
 
 % Vector initalizer
-function vinit(x_, y_, z_ : real) : vec3
+function vinit(x, y, z : real) : vec3
     var v : vec3
-    v.x := x_
-    v.y := y_
-    v.z := z_
+    v.x := x
+    v.y := y
+    v.z := z
     result v
 end vinit
 
-% Addition and subtraction
+    % Addition and subtraction
 function vadd(u, v : vec3) : vec3
-    result vinit(u.x + v.x, u.y + v.y, u.z + v.z)
+        result vinit(u.x + v.x, u.y + v.y, u.z + v.z)
 end vadd
 
 function vsub(u, v : vec3) : vec3
-    result vinit(u.x - v.x, u.y - v.y, u.z - v.z)
+        result vinit(u.x - v.x, u.y - v.y, u.z - v.z)
 end vsub
 
 function negate(v : vec3) : vec3
     result vinit(-v.x, -v.y, -v.z)
 end negate
 
-% Multiplication
+    % Multiplication
 function vmul(u, v : vec3) : vec3
-    result vinit(u.x * v.x, u.y * v.y, u.z * v.z)
+        result vinit(u.x * v.x, u.y * v.y, u.z * v.z)
 end vmul
 
 function smul(v : vec3, t : real) : vec3
@@ -37,13 +35,13 @@ function smul(v : vec3, t : real) : vec3
 end smul
 
 % Division
-function sdiv(v : vec3, t : real) : vec3
-    result smul(v, (1/t))
-end sdiv
-
 function vdiv(u, v : vec3) : vec3
     result vmul(vdiv(vinit(1,1,1), u), v)
 end vdiv
+
+function sdiv(v : vec3, t : real) : vec3
+    result smul(v, (1/t))
+end sdiv
 
 % Length
 function len_squared(v : vec3) : real
