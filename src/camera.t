@@ -12,36 +12,34 @@ class camera
 
     % private
     var image_height        : int
-    var center              : ^vec3
-    var pixel00_loc         : ^vec3
-    var pixel_delta_u       : ^vec3
-    var pixel_delta_v       : ^vec3
+    var center              : vec3
+    var pixel00_loc         : vec3
+    var pixel_delta_u       : vec3
+    var pixel_delta_v       : vec3
     var pixel_samples_scale : real
 
-    function ray_color(r : ^ray, world : ^hittable) : ^vec3
+    function ray_color(r : ^ray, world : ^hittable) : vec3
         var rec             : ^hit_record
         var a               : real
-        var col             : ^vec3
+        var col             : vec3
         new rec
 
-        var rc_a    :^vec3  := vinit(1.0, 1.0, 1.0)
-        var rc_b    :^vec3
+        var rc_a    :vec3  := vinit(1.0, 1.0, 1.0)
+        var rc_b    :vec3
 
         if (world -> hit( r, iuniversef, rec )) then
             rc_b    := vadd(rec -> normal, rc_a)
             col     := smul(rc_b, 0.5)
-            free rc_a
-            free rc_b
             free rec
             result col
         end if
 
-        var rc_fa   :^vec3
-        var rc_fb   :^vec3
+        var rc_fa   :vec3
+        var rc_fb   :vec3
 
-        var unit_direction  : ^vec3
+        var unit_direction  : vec3
         unit_direction  := unit_vector(r -> direction)
-        a               := 0.5 * (unit_direction -> y + 1.0)
+        a               := 0.5 * (unit_direction.y + 1.0)
 
         rc_b    := vinit(0.5, 0.7, 1.0)
 
@@ -50,12 +48,7 @@ class camera
 
         col := vadd(rc_fa, rc_fb)
 
-        free unit_direction
         free rec
-        free rc_a
-        free rc_b
-        free rc_fa
-        free rc_fb
 
         result col
     end ray_color
@@ -72,9 +65,9 @@ class camera
         var focal_length        : real
         var viewport_height     : real
         var viewport_width      : real
-        var viewport_u          : ^vec3
-        var viewport_v          : ^vec3
-        var viewport_upper_left : ^vec3
+        var viewport_u          : vec3
+        var viewport_v          : vec3
+        var viewport_upper_left : vec3
 
         if (image_width div aspect_ratio) < 1 then
             image_height := 1
@@ -121,24 +114,24 @@ class camera
         )
     end initialize
 
-    function sample_square : ^vec3
+    function sample_square : vec3
 	    result vinit(random(-0.5, 0.5), random(-0.5, 0.5), 0)
     end sample_square
 
     function get_ray(x, y : int) : ^ray
-        var pixel_sample    : ^vec3
-        var ray_origin      : ^vec3
-        var ray_direction   : ^vec3
-        var offset          : ^vec3
-        var gr_fa           : ^vec3
-        var gr_fb           : ^vec3
-        var gr_a            : ^vec3
+        var pixel_sample    : vec3
+        var ray_origin      : vec3
+        var ray_direction   : vec3
+        var offset          : vec3
+        var gr_fa           : vec3
+        var gr_fb           : vec3
+        var gr_a            : vec3
         var res             : ^ray
 
 
         offset          :=  sample_square
-        gr_fa           :=  smul(pixel_delta_u, x + offset -> x)
-        gr_fb           :=  smul(pixel_delta_v, y + offset -> y)
+        gr_fa           :=  smul(pixel_delta_u, x + offset.x)
+        gr_fb           :=  smul(pixel_delta_v, y + offset.y)
         gr_a            :=  vadd(gr_fa, gr_fb)
         pixel_sample    :=  vadd(pixel00_loc, gr_a)
 
@@ -146,44 +139,32 @@ class camera
         ray_direction   := vsub(pixel_sample, ray_origin)
         res := rinit(ray_origin, ray_direction)
 
-        free offset
-        free gr_fa
-        free gr_fb
-        free gr_a
-        free pixel_sample
-
         result res
     end get_ray
 
     procedure render(world : ^hittable)
         initialize
-        var pixel_color : ^vec3
+        var pixel_color : vec3
         var r           : ^ray
-        var rc          : ^vec3
-        var final_color : ^vec3
-        new pixel_color
+        var rc          : vec3
+        var final_color : vec3
 
         for x : 0 .. image_width
             for y : 0 .. image_height
-                pixel_color -> initialize(0, 0, 0)
+                pixel_color := vinit(0, 0, 0)
 
                 for sample : 0 .. samples_per_pixel
                     r   := get_ray(x, y)
                     rc  := ray_color(r, world)
-                    pixel_color -> plus(rc)
-                    free rc
+                    pixel_color := vadd(pixel_color, rc)
                     free r
                 end for
 
                 final_color := smul(pixel_color, pixel_samples_scale)
 
                 vSetPixel(x, y, final_color)
-
-                free final_color
             end for
         end for
-
-        free pixel_color
     end render
 end camera
 
