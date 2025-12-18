@@ -1,6 +1,6 @@
 class sphere
     inherit hittable
-    import vec3, dot, vsub, sdiv, len_squared, hit_record
+    import vec3, dot, vsub, sdiv, len_squared, hit_record, rat
     export initialize
 
     var center  : vec3
@@ -11,10 +11,10 @@ class sphere
         radius := max(0, rad)
     end initialize
 
-    body function hit(r : ^ray, ray_t : ^interval, rec : ^hit_record) : boolean
-        var oc              : vec3 := vsub(center, r -> origin)
-        var a               : real  := len_squared(r -> direction)
-        var h               : real  := dot(r -> direction, oc)
+    body function hit(r : ray, ray_t : ^interval, rec : ^hit_record) : boolean
+        var oc              : vec3 := vsub(center, r.origin)
+        var a               : real  := len_squared(r.direction)
+        var h               : real  := dot(r.direction, oc)
         var c               : real  := len_squared(oc) - (radius * radius)
         var discriminant    : real  := (h * h) - (a*c)
 
@@ -34,7 +34,7 @@ class sphere
         end if
 
         rec -> sett(root)
-        rec -> setp(r -> at(rec -> t))
+        rec -> setp(rat(r, rec -> t))
 
         var outward_normal : vec3 := sdiv(vsub(rec -> p, center), radius)
         rec -> set_face_normal(r, outward_normal)

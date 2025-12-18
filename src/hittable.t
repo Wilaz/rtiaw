@@ -7,8 +7,8 @@ class hit_record
     var     t           : real
     var     front_face  : boolean
 
-    procedure set_face_normal(r : ^ray, outward_normal : vec3)
-        front_face := dot(r -> direction, outward_normal) < 0
+    procedure set_face_normal(r : ray, outward_normal : vec3)
+        front_face := dot(r.direction, outward_normal) < 0
         if front_face then
             normal := outward_normal
         else
@@ -36,5 +36,5 @@ class hittable
     import ray, hit_record, interval
     export hit
 
-    deferred function hit(r : ^ray, ray_t : ^interval, rec : ^hit_record) : boolean
+    deferred function hit(r : ray, ray_t : ^interval, rec : ^hit_record) : boolean
 end hittable

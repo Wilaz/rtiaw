@@ -23,8 +23,8 @@ function vsub(u, v : vec3) : vec3
     result vinit(u.x - v.x, u.y - v.y, u.z - v.z)
 end vsub
 
-function negate(u : vec3) : vec3
-    result vinit(-u.x, -u.y, -u.z)
+function negate(v : vec3) : vec3
+    result vinit(-v.x, -v.y, -v.z)
 end negate
 
 % Multiplication
@@ -46,12 +46,12 @@ function vdiv(u, v : vec3) : vec3
 end vdiv
 
 % Length
-function len_squared(u : vec3) : real
-    result u.x*u.x + u.y*u.y + u.z*u.z
+function len_squared(v : vec3) : real
+    result v.x*v.x + v.y*v.y + v.z*v.z
 end len_squared
 
-function len(u : vec3) : real
-    result sqrt(len_squared(u))
+function len(v : vec3) : real
+    result sqrt(len_squared(v))
 end len
 
 % Misc. vector opperations

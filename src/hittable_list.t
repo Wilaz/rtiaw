@@ -17,7 +17,7 @@ class hittable_list
         ind := ind + 1
     end add
 
-    body function hit(r : ^ray, ray_t : ^interval, rec : ^hit_record) : boolean
+    body function hit(r : ray, ray_t : ^interval, rec : ^hit_record) : boolean
         var temp_rec        : ^hit_record
         var temp_interval   : ^interval
         var hit_anything    : boolean := false

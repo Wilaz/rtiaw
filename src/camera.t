@@ -18,38 +18,22 @@ class camera
     var pixel_delta_v       : vec3
     var pixel_samples_scale : real
 
-    function ray_color(r : ^ray, world : ^hittable) : vec3
-        var rec             : ^hit_record
-        var a               : real
-        var col             : vec3
+    function ray_color(r : ray, world : ^hittable) : vec3
+        var col : vec3
+        var rec : ^hit_record
         new rec
 
-        var rc_a    :vec3  := vinit(1.0, 1.0, 1.0)
-        var rc_b    :vec3
-
         if (world -> hit( r, iuniversef, rec )) then
-            rc_b    := vadd(rec -> normal, rc_a)
-            col     := smul(rc_b, 0.5)
+            col     := smul(vadd(rec -> normal, vinit(1.0, 1.0, 1.0)), 0.5)
             free rec
             result col
         end if
 
-        var rc_fa   :vec3
-        var rc_fb   :vec3
+        var a : real := 0.5 * (unit_vector(r.direction).y + 1.0)
 
-        var unit_direction  : vec3
-        unit_direction  := unit_vector(r -> direction)
-        a               := 0.5 * (unit_direction.y + 1.0)
-
-        rc_b    := vinit(0.5, 0.7, 1.0)
-
-        rc_fa   := smul(rc_a, (1.0-a))
-        rc_fb   := smul(rc_b, a)
-
-        col := vadd(rc_fa, rc_fb)
+        col := vadd(smul(vinit(1.0, 1.0, 1.0), (1.0-a)), smul(vinit(0.5, 0.7, 1.0), a))
 
         free rec
-
         result col
     end ray_color
 
@@ -118,7 +102,7 @@ class camera
 	    result vinit(random(-0.5, 0.5), random(-0.5, 0.5), 0)
     end sample_square
 
-    function get_ray(x, y : int) : ^ray
+    function get_ray(x, y : int) : ray
         var pixel_sample    : vec3
         var ray_origin      : vec3
         var ray_direction   : vec3
@@ -126,8 +110,6 @@ class camera
         var gr_fa           : vec3
         var gr_fb           : vec3
         var gr_a            : vec3
-        var res             : ^ray
-
 
         offset          :=  sample_square
         gr_fa           :=  smul(pixel_delta_u, x + offset.x)
@@ -137,15 +119,14 @@ class camera
 
         ray_origin      := center
         ray_direction   := vsub(pixel_sample, ray_origin)
-        res := rinit(ray_origin, ray_direction)
 
-        result res
+        result rinit(ray_origin, ray_direction)
     end get_ray
 
     procedure render(world : ^hittable)
         initialize
         var pixel_color : vec3
-        var r           : ^ray
+        var r           : ray
         var rc          : vec3
         var final_color : vec3
 
@@ -157,7 +138,6 @@ class camera
                     r   := get_ray(x, y)
                     rc  := ray_color(r, world)
                     pixel_color := vadd(pixel_color, rc)
-                    free r
                 end for
 
                 final_color := smul(pixel_color, pixel_samples_scale)
