@@ -8,10 +8,8 @@ procedure vSetPixel(x, y : int, color : vec3)
     var g : real := color.y
     var b : real := color.z
 
-    var intensity : ^interval := iinit(0.000, 0.999)
+    var intensity : interval := iinit(0.000, 0.999)
 
-    RGB.SetColor(1, intensity -> clamp(r), intensity -> clamp(g), intensity -> clamp(b))
+    RGB.SetColor(1, iclamp(intensity, r), iclamp(intensity, g), iclamp(intensity, b))
     drawdot(x, maxy - y, 1)
-
-    free intensity
 end vSetPixel

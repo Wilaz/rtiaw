@@ -1,6 +1,6 @@
 % Constants
-var infinity    : real := Limits.maxnat
-var pi          : real := Math.PI
+var infinity : real := Limits.maxnat
+var pi       : real := Math.PI
 
 % Utility Functions
 function degrees_to_radians(degrees : real) : real

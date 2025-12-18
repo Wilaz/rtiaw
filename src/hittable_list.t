@@ -17,25 +17,19 @@ class hittable_list
         ind := ind + 1
     end add
 
-    body function hit(r : ray, ray_t : ^interval, rec : ^hit_record) : boolean
+    body function hit(r : ray, ray_t : interval, rec : ^hit_record) : boolean
         var temp_rec        : ^hit_record
-        var temp_interval   : ^interval
         var hit_anything    : boolean := false
-        var closest_so_far  : real := ray_t -> imax
+        var closest_so_far  : real := ray_t.max
 
         new temp_rec
 
         for i : 0 .. ind - 1
-            new temp_interval
-            temp_interval := iinit(ray_t -> imin, closest_so_far)
-
-            if objects(i) -> hit(r, temp_interval, temp_rec) then
+            if objects(i) -> hit(r, iinit(ray_t.min, closest_so_far), temp_rec) then
                 hit_anything    := true
                 closest_so_far  := temp_rec -> t
                 rec -> sets(temp_rec)
             end if
-
-            free temp_interval
         end for
 
         free temp_rec
