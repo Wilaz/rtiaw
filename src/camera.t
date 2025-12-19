@@ -1,12 +1,12 @@
 include "set_pixel.t"
 
 class camera
-    import vec3, ray, hit_record, iinit, smul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vmul, random, sdiv, iuniversef
-    export var aspect_ratio, var image_width, var samples_per_pixel, var window_name, render
+    import vec3, ray, hit_record, iinit, smul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vmul, random, sdiv, iuniversef, random_on_hemisphere
+    export var aspect_ratio, var image_width, var samples_per_pixel, var window_name, var max_depth, render
 
     % public
     var aspect_ratio        : real
-    var image_width, samples_per_pixel : int
+    var image_width, samples_per_pixel, max_depth : int
     var window_name         : string
 
     % private
@@ -14,13 +14,18 @@ class camera
     var center, pixel00_loc, pixel_delta_u, pixel_delta_v : vec3
     var pixel_samples_scale : real
 
-    function ray_color(r : ray, world : ^hittable) : vec3
-        var col : vec3
+    function ray_color(r : ray, depth : int, world : ^hittable) : vec3
+        if depth <= 0 then
+            result vinit(0, 0, 0)
+        end if
+
+        var col, direction : vec3
         var rec : ^hit_record
         new rec
 
         if (world -> hit( r, iuniversef, rec )) then
-            col     := smul(vadd(rec -> normal, vinit(1.0, 1.0, 1.0)), 0.5)
+            direction := random_on_hemisphere(rec -> normal)
+            col := smul(ray_color(rinit(rec -> p, direction), depth-1, world), 0.5)
             free rec
             result col
         end if
@@ -81,7 +86,7 @@ class camera
             for y : 0 .. image_height
                 pixel_color := vinit(0, 0, 0)
                 for sample : 0 .. samples_per_pixel
-                    pixel_color := vadd(pixel_color, ray_color(get_ray(x, y), world))
+                    pixel_color := vadd(pixel_color, ray_color(get_ray(x, y), max_depth, world))
                 end for
                 vSetPixel(x, y, smul(pixel_color, pixel_samples_scale))
             end for
@@ -89,12 +94,13 @@ class camera
     end render
 end camera
 
-function cinit(ratio : real, width, samples_per_pixel : int, window_name : string) : ^camera
+function cinit(ratio : real, width, samples_per_pixel : int, window_name : string, max_depth : int) : ^camera
     var c : ^camera
     new c
     c -> aspect_ratio      := ratio
     c -> image_width       := width
     c -> samples_per_pixel := samples_per_pixel
     c -> window_name       := window_name
+    c -> max_depth         := max_depth
     result c
 end cinit

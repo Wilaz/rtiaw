@@ -68,3 +68,36 @@ end cross
 function unit_vector(v : vec3) : vec3
     result sdiv(v, len(v))
 end unit_vector
+
+
+% Random
+function vrandom : vec3
+    result vinit(random(+infinity, -infinity), random(+infinity, -infinity), random(+infinity, -infinity))
+end vrandom
+
+function vcrandom(min, max : real) : vec3
+    put random(min, max)
+    result vinit(random(min, max), random(min, max), random(min, max))
+end vcrandom
+
+function random_unit_vector : vec3
+    var p : vec3
+    var lensq : real
+    loop
+        p := vcrandom(-1, 1)
+        lensq := len_squared(p)
+        exit when 1.0**-32 < lensq and lensq <= 1.0
+    end loop
+
+    result sdiv(p, sqrt(lensq))
+end random_unit_vector
+
+function random_on_hemisphere(normal : vec3) : vec3
+    var on_unit_sphere : vec3 := random_unit_vector
+
+    if dot(on_unit_sphere, normal) > 0.0 then
+        result on_unit_sphere
+    else
+        result negate(on_unit_sphere)
+    end if
+end random_on_hemisphere
