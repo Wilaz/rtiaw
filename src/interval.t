@@ -39,3 +39,4 @@ end iclamp
 var iempty : interval := iinit(+infinity, -infinity)
 var iuniverse : interval := iinit(-infinity, +infinity)
 var iuniversef : interval := iinit(0, infinity)
+var iuniversesf : interval := iinit(0.001, infinity)

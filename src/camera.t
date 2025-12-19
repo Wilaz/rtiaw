@@ -23,7 +23,7 @@ class camera
         var rec : ^hit_record
         new rec
 
-        if (world -> hit( r, iuniversef, rec )) then
+        if (world -> hit( r, iuniversesf, rec )) then
             direction := random_on_hemisphere(rec -> normal)
             col := smul(ray_color(rinit(rec -> p, direction), depth-1, world), 0.5)
             free rec

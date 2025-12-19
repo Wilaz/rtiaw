@@ -76,7 +76,6 @@ function vrandom : vec3
 end vrandom
 
 function vcrandom(min, max : real) : vec3
-    put random(min, max)
     result vinit(random(min, max), random(min, max), random(min, max))
 end vcrandom
 
@@ -86,7 +85,7 @@ function random_unit_vector : vec3
     loop
         p := vcrandom(-1, 1)
         lensq := len_squared(p)
-        exit when 1.0**-32 < lensq and lensq <= 1.0
+        exit when Limits.MinExp < lensq and lensq <= 1.0
     end loop
 
     result sdiv(p, sqrt(lensq))
