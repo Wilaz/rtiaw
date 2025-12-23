@@ -1,7 +1,6 @@
 type interval:
     record
-        min : real
-        max : real
+        min, max : real
     end record
 
 % Interval initalizer

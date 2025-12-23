@@ -1,6 +1,6 @@
-class hit_record
+class hit_record_
     import vec3, ray, dot, negate
-    export  var p, var t, normal, front_face, set_face_normal, sets
+    export  var p, var t, var normal, var front_face, set_face_normal
 
     var     p, normal   : vec3
     var     t           : real
@@ -14,18 +14,4 @@ class hit_record
             normal := negate(outward_normal)
         end if
     end set_face_normal
-
-    procedure sets(value : ^hit_record)
-        p           := value -> p
-        t           := value -> t
-        normal      := value -> normal
-        front_face  := value -> front_face
-    end sets
-end hit_record
-
-class hittable
-    import ray, hit_record, interval
-    export hit
-
-    deferred function hit(r : ray, ray_t : interval, rec : ^hit_record) : boolean
-end hittable
+end hit_record_

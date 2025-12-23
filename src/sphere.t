@@ -1,12 +1,13 @@
 class sphere
     inherit hittable
-    import vec3, dot, vsub, sdiv, len_squared, hit_record, rat, isurrounds
-    export var center, var radius
+    import vec3, dot, vsub, sdiv, len_squared, hit_record, rat, isurrounds, material
+    export var center, var radius, var mat
 
     var center  : vec3
     var radius  : real
+    var mat     : ^material
 
-    body function hit(r : ray, ray_t : interval, rec : ^hit_record) : boolean
+    body function hit(r : ray, ray_t : interval, var rec : ^hit_record) : boolean
         var oc              : vec3 := vsub(center, r.origin)
         var a               : real  := len_squared(r.direction)
         var h               : real  := dot(r.direction, oc)
@@ -33,14 +34,16 @@ class sphere
 
         var outward_normal : vec3 := sdiv(vsub(rec -> p, center), radius)
         rec -> set_face_normal(r, outward_normal)
+        rec -> mat := mat
 
         result true
     end hit
 end sphere
 
-function sinit(center : vec3, radius : real) : ^sphere
+function sinit(center : vec3, radius : real, mat : ^material) : ^sphere
     var s : ^sphere
     new s
+    s -> mat := mat
     s -> center := center
     s -> radius := max(0, radius)
     result s

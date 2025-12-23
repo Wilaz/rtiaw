@@ -1,7 +1,7 @@
 include "set_pixel.t"
 
 class camera
-    import vec3, ray, hit_record, iinit, smul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vmul, random, sdiv, iuniversef, random_on_hemisphere
+    import vec3, ray, hit_record, iinit, smul, vadd, vinit, unit_vector, hittable, infinity, vsub, rinit, vSetPixel, winit, vmul, random, sdiv, iuniversesf, random_unit_vector, material
     export var aspect_ratio, var image_width, var samples_per_pixel, var window_name, var max_depth, render
 
     % public
@@ -23,11 +23,17 @@ class camera
         var rec : ^hit_record
         new rec
 
-        if (world -> hit( r, iuniversesf, rec )) then
-            direction := random_on_hemisphere(rec -> normal)
-            col := smul(ray_color(rinit(rec -> p, direction), depth-1, world), 0.5)
+        if world -> hit(r, iuniversesf, rec) then
+            var scattered : ray
+            var attenuation : vec3
+            
+            if rec -> mat -> scatter(r, rec, attenuation, scattered) then
+                free rec
+                result vmul(attenuation, ray_color(scattered, depth-1, world))
+            end if
+            
             free rec
-            result col
+            result vinit(0,0,0)
         end if
 
         var a : real := 0.5 * (unit_vector(r.direction).y + 1.0)

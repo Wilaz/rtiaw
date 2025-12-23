@@ -69,6 +69,9 @@ function unit_vector(v : vec3) : vec3
     result sdiv(v, len(v))
 end unit_vector
 
+function near_zero(v : vec3) : boolean
+        result abs(v.x) <= Limits.MinExp and abs(v.y) <= Limits.MinExp and abs(v.z) <= Limits.MinExp
+end near_zero
 
 % Random
 function vrandom : vec3
@@ -100,3 +103,7 @@ function random_on_hemisphere(normal : vec3) : vec3
         result negate(on_unit_sphere)
     end if
 end random_on_hemisphere
+
+function reflect(v, n : vec3) : vec3
+    result vsub(v, smul(smul(n, dot(v, n)), 2))
+end reflect

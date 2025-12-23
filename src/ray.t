@@ -1,14 +1,13 @@
 type ray:
     record
-        origin : vec3
-        direction : vec3
+        origin, direction : vec3
     end record
 
 % Ray initalizer
-function rinit(origin_ : vec3, direction_ : vec3) : ray
+function rinit(origin, direction: vec3) : ray
     var r : ray
-    r.origin := origin_
-    r.direction := direction_
+    r.origin := origin
+    r.direction := direction
     result r
 end rinit
 

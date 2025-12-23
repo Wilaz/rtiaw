@@ -1,6 +1,6 @@
 % Constants
-var infinity : real := Limits.maxnat
-var pi       : real := Math.PI
+const infinity : real := Limits.maxnat
+const pi       : real := Math.PI
 
 % Utility Functions
 function degrees_to_radians(degrees : real) : real
@@ -22,3 +22,4 @@ end winit
 include "interval.t"
 include "vec3.t"
 include "ray.t"
+include "material.t"
