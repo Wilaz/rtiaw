@@ -39,24 +39,33 @@ end lbinit
 % Metal
 class metal
     inherit material
-    import reflect
-    export var albedo
+    import reflect, vadd, vmul, random_unit_vector, unit_vector, dot
+    export var albedo, var fuzz
 
     var albedo : vec3
+    var fuzz : real
+
 
     body function scatter(r_in : ray, rec : ^hit_record_, var attenuation : vec3, var scattered : ray) : boolean
-        scattered := rinit(rec -> p, reflect(r_in.direction, rec -> normal))
+        var reflected : vec3 := reflect(r_in.direction, rec -> normal)
+        reflected := vadd(unit_vector(reflected), smul(random_unit_vector, fuzz))
+        scattered := rinit(rec -> p, reflected)
         attenuation := albedo
 
-        result true
+        result dot(scattered.direction, rec -> normal) > 0.0
     end scatter
 
 end metal
 
-function minit(albedo: vec3) : ^metal
+function minit(albedo : vec3, fuzz : real) : ^metal
     var m : ^metal
     new m
     m -> albedo := albedo
+    if fuzz < 1.0 then
+        m -> fuzz := fuzz
+    else
+        m -> fuzz := 1.0
+    end if
     result m
 end minit
 
