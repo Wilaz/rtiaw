@@ -70,7 +70,7 @@ function unit_vector(v : vec3) : vec3
 end unit_vector
 
 function near_zero(v : vec3) : boolean
-        result abs(v.x) <= Limits.MinExp and abs(v.y) <= Limits.MinExp and abs(v.z) <= Limits.MinExp
+    result abs(v.x) <= Limits.MinExp and abs(v.y) <= Limits.MinExp and abs(v.z) <= Limits.MinExp
 end near_zero
 
 % Random
@@ -83,10 +83,10 @@ function vcrandom(min, max : real) : vec3
 end vcrandom
 
 function random_unit_vector : vec3
-    var p : vec3
+    var p     : vec3
     var lensq : real
     loop
-        p := vcrandom(-1, 1)
+        p     := vcrandom(-1, 1)
         lensq := len_squared(p)
         exit when Limits.MinExp < lensq and lensq <= 1.0
     end loop
@@ -95,7 +95,7 @@ function random_unit_vector : vec3
 end random_unit_vector
 
 function random_on_hemisphere(normal : vec3) : vec3
-    var on_unit_sphere : vec3 := random_unit_vector
+    const on_unit_sphere : vec3 := random_unit_vector
 
     if dot(on_unit_sphere, normal) > 0.0 then
         result on_unit_sphere
@@ -104,6 +104,14 @@ function random_on_hemisphere(normal : vec3) : vec3
     end if
 end random_on_hemisphere
 
+% Materials
 function reflect(v, n : vec3) : vec3
     result vsub(v, smul(smul(n, dot(v, n)), 2))
 end reflect
+
+function refract(uv, n : vec3, etai_over_etat : real) : vec3
+    const cos_theta      : real := min(dot(negate(uv), n), 1.0)
+    const r_out_perp     : vec3 := smul(vadd(uv, smul(n, cos_theta)), etai_over_etat)
+    const r_out_parallel : vec3 := smul(n, 0 - sqrt(abs(1.0 - len_squared(r_out_perp))))
+    result vadd(r_out_perp, r_out_parallel)
+end refract
