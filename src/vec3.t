@@ -75,7 +75,7 @@ end near_zero
 
 % Random
 function vrandom : vec3
-    result vinit(random(+infinity, -infinity), random(+infinity, -infinity), random(+infinity, -infinity))
+    result vinit(Rand.Real, Rand.Real, Rand.Real)
 end vrandom
 
 function vcrandom(min, max : real) : vec3
@@ -90,7 +90,6 @@ function random_unit_vector : vec3
         lensq := len_squared(p)
         exit when Limits.MinExp < lensq and lensq <= 1.0
     end loop
-
     result sdiv(p, sqrt(lensq))
 end random_unit_vector
 
@@ -103,6 +102,15 @@ function random_on_hemisphere(normal : vec3) : vec3
         result negate(on_unit_sphere)
     end if
 end random_on_hemisphere
+
+function random_in_unit_disk : vec3
+    var p : vec3
+    loop
+        p := vinit(random(-1,1), random(-1,1), 0);
+        exit when len_squared(p) < 1
+    end loop
+    result p
+end random_in_unit_disk
 
 % Materials
 function reflect(v, n : vec3) : vec3

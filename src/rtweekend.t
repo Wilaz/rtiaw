@@ -8,9 +8,7 @@ function degrees_to_radians(degrees : real) : real
 end degrees_to_radians
 
 function random(minimum, maximum : real) : real
-    var temp : real
-    rand(temp)
-    result ((maximum-minimum) * temp) + minimum
+    result (maximum - minimum) * Rand.Real + minimum
 end random
 
 procedure winit(width, height : int, title : string)
